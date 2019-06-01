@@ -7,8 +7,8 @@ import { PostItNote } from './post-it-note';
 export class PostItNotesService implements OnInit {
   sequence_number: number = 0;
 
-  itemChangeEvent: EventEmitter<PostItNote>;
-  itemDeleteEvent: EventEmitter<PostItNote>;
+  itemChangeEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
+  itemDeleteEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
 
   constructor() { }
 
