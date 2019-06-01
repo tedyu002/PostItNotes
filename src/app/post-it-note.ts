@@ -3,4 +3,6 @@ export class PostItNote {
   color: string;
   title: string;
   content: string;
+  left: number;
+  top: number;
 }

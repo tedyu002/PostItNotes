@@ -1,4 +1,8 @@
-<form class="note" [formGroup]="noteForm">
+<form
+  class="note" [formGroup]="noteForm"
+  draggable="true"
+  (dragstart)="dragstart_handler($event);"
+  [style.left]="_note.left + 'px'" [style.top]="_note.top + 'px'">
   <span>Title: <input type="text" formControlName="title"></span>
   <span>Color: <input type="text" formControlName="color"></span>
   <div>Content: <textarea formControlName="content"></textarea></div>

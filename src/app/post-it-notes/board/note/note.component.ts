@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
@@ -44,5 +44,15 @@ export class NoteComponent implements OnInit {
 
   get note(): PostItNote {
     return this._note;
+  }
+
+  dragstart_handler(event: DragEvent): void {
+    event.dataTransfer.setData("text/plain",
+      JSON.stringify({
+        id: this._note.id,
+        clientX: event.clientX,
+        clientY: event.clientY
+      })
+    );
   }
 }
