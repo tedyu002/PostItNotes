@@ -7,6 +7,6 @@
   [style.left]="_note.left + 'px'" [style.top]="_note.top + 'px'" [style.z-index]="_note.zindex">
   <button (click)="del()">Delete</button>
   <span>Title: <input type="text" formControlName="title"></span>
-  <span>Color: <input type="text" formControlName="color"></span>
+  <span>Color: <input type="color" formControlName="color"></span>
   <div>Content: <textarea formControlName="content"></textarea></div>
 </form>
