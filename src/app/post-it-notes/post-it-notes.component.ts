@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
+import { Subscription } from 'rxjs';
+
 import { PostItNote } from '../post-it-note';
 import { PostItNotesService } from '../post-it-notes.service';
 
@@ -10,11 +13,35 @@ import { PostItNotesService } from '../post-it-notes.service';
 export class PostItNotesComponent implements OnInit {
   notes: Array<PostItNote>;
 
+  itemChange: Subscription;
+  itemDelete: Subscription;
+
   constructor(
     private postItNotesService: PostItNotesService
   ) { }
 
   ngOnInit() {
+    this.renew();
+
+    this.itemChange = this.postItNotesService.itemChangeEvent.subscribe(
+      () => {
+        this.renew();
+      }
+    );
+
+    this.itemDelete = this.postItNotesService.itemDeleteEvent.subscribe(
+      () => {
+        this.renew();
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.itemChange.unsubscribe();
+    this.itemDelete.unsubscribe();
+  }
+
+  private renew() {
     this.notes = this.postItNotesService.list();
   }
 

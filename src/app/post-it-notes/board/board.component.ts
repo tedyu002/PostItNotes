@@ -18,8 +18,11 @@ export class BoardComponent implements OnInit {
   ngOnInit() {
   }
 
-  newNote(): void {
+  newNote(event: MouseEvent): void {
     let note = new PostItNote();
+
+    note.left = event.clientX;
+    note.top = event.clientY;
 
     this.postItNotesService.insert(note);
   }

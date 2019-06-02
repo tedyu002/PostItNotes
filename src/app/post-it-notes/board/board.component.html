@@ -2,7 +2,7 @@
   (dragover)="dropping($event);"
   (dragenter)="dropping($event);"
   (drop)="drop($event);"
-  (dblclick)="newNote();"
+  (dblclick)="newNote($event);"
 >
   <app-note *ngFor="let note of notes" [note]="note"></app-note>
 </div>
