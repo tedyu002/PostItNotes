@@ -8,7 +8,6 @@ import { PostItNotesService } from '../../post-it-notes.service';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  @Input('notes')
   notes: Array<PostItNote>;
 
   constructor(
@@ -16,6 +15,7 @@ export class BoardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.notes = this.postItNotesService.list();
   }
 
   newNote(event: MouseEvent): void {

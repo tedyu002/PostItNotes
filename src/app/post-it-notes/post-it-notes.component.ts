@@ -8,41 +8,17 @@ import { PostItNotesService } from '../post-it-notes.service';
 @Component({
   selector: 'app-post-it-notes',
   templateUrl: './post-it-notes.component.html',
-  styleUrls: ['./post-it-notes.component.css']
+  styleUrls: ['./post-it-notes.component.css'],
+  providers: [PostItNotesService]
 })
 export class PostItNotesComponent implements OnInit {
-  notes: Array<PostItNote>;
-
-  itemChange: Subscription;
-  itemDelete: Subscription;
 
   constructor(
-    private postItNotesService: PostItNotesService
   ) { }
 
   ngOnInit() {
-    this.renew();
-
-    this.itemChange = this.postItNotesService.itemChangeEvent.subscribe(
-      () => {
-        this.renew();
-      }
-    );
-
-    this.itemDelete = this.postItNotesService.itemDeleteEvent.subscribe(
-      () => {
-        this.renew();
-      }
-    );
   }
 
   ngOnDestroy() {
-    this.itemChange.unsubscribe();
-    this.itemDelete.unsubscribe();
   }
-
-  private renew() {
-    this.notes = this.postItNotesService.list();
-  }
-
 }

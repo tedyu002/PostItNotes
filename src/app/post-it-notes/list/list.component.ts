@@ -9,13 +9,13 @@ import { PostItNotesService } from '../../post-it-notes.service';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  @Input('notes')
   notes: Array<PostItNote>;
 
   constructor(
-    private postItNoteService: PostItNotesService
+    private postItNotesService: PostItNotesService
   ) { }
 
   ngOnInit() {
+    this.notes = this.postItNotesService.list();
   }
 }

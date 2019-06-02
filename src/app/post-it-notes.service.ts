@@ -10,6 +10,8 @@ export class PostItNotesService implements OnInit {
   itemChangeEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
   itemDeleteEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
 
+  notes: Array<PostItNote> = new Array<PostItNote>();
+
   constructor() { }
 
   ngOnInit() {
@@ -24,6 +26,8 @@ export class PostItNotesService implements OnInit {
 
     localStorage.setItem(note.id, JSON.stringify(note));
 
+    this.notes.push(note);
+
     this.itemChangeEvent.emit(note);
 
     return note;
@@ -32,27 +36,43 @@ export class PostItNotesService implements OnInit {
   update(note: PostItNote): void {
     localStorage.setItem(note.id, JSON.stringify(note));
 
+    for (let i = 0; i < this.notes.length; ++i) {
+      if (this.notes[i].id == note.id) {
+        this.notes[i] = note;
+        break;
+      }
+    }
+
     this.itemChangeEvent.emit(note);
   }
 
   del(note: PostItNote): void {
     localStorage.removeItem(note.id);
 
+    for (let i = 0; i < this.notes.length; ++i) {
+      if (this.notes[i].id == note.id) {
+        this.notes.splice(i, 1);
+        break;
+      }
+    }
+
     this.itemDeleteEvent.emit(note);
   }
 
   list(): Array<PostItNote> {
-    let notes = Array<PostItNote>();
-    let notes_len = localStorage.length;
+    if (this.notes.length == 0) {
+      let notes = Array<PostItNote>();
+      let notes_len = localStorage.length;
 
-    for (let i = 0; i < notes_len; ++i) {
-      let key = localStorage.key(i);
+      for (let i = 0; i < notes_len; ++i) {
+        let key = localStorage.key(i);
 
-      let item:PostItNote = JSON.parse(localStorage.getItem(key)) as PostItNote;
+        let item:PostItNote = JSON.parse(localStorage.getItem(key)) as PostItNote;
 
-      notes.push(item);
+        this.notes.push(item);
+      }
     }
 
-    return notes;
+    return this.notes;
   }
 }
