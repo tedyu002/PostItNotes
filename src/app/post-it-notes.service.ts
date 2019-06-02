@@ -75,4 +75,16 @@ export class PostItNotesService implements OnInit {
 
     return this.notes;
   }
+
+  assignMaxZIndex(assignNote: PostItNote): void {
+    let max_zindex = 0;
+
+    for (let note of this.list()) {
+      if (note.zindex && assignNote.id != note.id && note.zindex > max_zindex) {
+        max_zindex = note.zindex;
+      }
+    }
+
+    assignNote.zindex = max_zindex + 1;
+  }
 }

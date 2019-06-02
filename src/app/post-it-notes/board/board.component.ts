@@ -24,6 +24,7 @@ export class BoardComponent implements OnInit {
     note.left = event.clientX;
     note.top = event.clientY;
 
+    this.postItNotesService.assignMaxZIndex(note);
     this.postItNotesService.insert(note);
   }
 

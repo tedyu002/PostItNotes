@@ -50,6 +50,11 @@ export class NoteComponent implements OnInit {
     return this._note;
   }
 
+  toTop(): void {
+    this.postItNotesService.assignMaxZIndex(this._note);
+    this.postItNotesService.update(this._note);
+  }
+
   dragstart_handler(event: DragEvent): void {
     event.dataTransfer.setData("text/plain",
       JSON.stringify({

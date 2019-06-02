@@ -5,4 +5,5 @@ export class PostItNote {
   content: string;
   left: number;
   top: number;
+  zindex: number;
 }
