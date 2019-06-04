@@ -43,4 +43,8 @@ export class NoteSimpleComponent implements OnInit {
   get title(): string {
     return this.note.title;
   }
+
+  del(): void {
+    this.postItNotesService.del(this.note);
+  }
 }

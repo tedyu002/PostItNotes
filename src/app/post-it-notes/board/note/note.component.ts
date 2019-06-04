@@ -63,10 +63,6 @@ export class NoteComponent implements OnInit {
     }
   }
 
-  del(): void {
-    this.postItNotesService.del(this._note);
-  }
-
   get note(): PostItNote {
     return this._note;
   }
