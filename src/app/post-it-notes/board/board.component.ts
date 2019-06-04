@@ -50,7 +50,11 @@ export class BoardComponent implements OnInit {
     return item.id;
   }
 
-  newNote(event: MouseEvent): void {
+  newNoteIfSelf(event: MouseEvent): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
     let note = new PostItNote();
 
     note.title = 'Please input title.';
