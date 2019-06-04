@@ -1,21 +1,29 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PostItNote } from '../../post-it-note';
 import { PostItNotesService } from '../../post-it-notes.service';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.css']
+  styleUrls: ['./board.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
   notes: Array<PostItNote>;
 
   constructor(
-    private postItNotesService: PostItNotesService
+    private postItNotesService: PostItNotesService,
+    private changeDetector: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.notes = this.postItNotesService.list();
+
+    this.postItNotesService.itemChangeEvent.subscribe(
+      () => {
+        this.changeDetector.markForCheck();
+      }
+    );
   }
 
   newNote(event: MouseEvent): void {

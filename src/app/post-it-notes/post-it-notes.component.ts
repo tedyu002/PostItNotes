@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
@@ -9,7 +9,8 @@ import { PostItNotesService } from '../post-it-notes.service';
   selector: 'app-post-it-notes',
   templateUrl: './post-it-notes.component.html',
   styleUrls: ['./post-it-notes.component.css'],
-  providers: [PostItNotesService]
+  providers: [PostItNotesService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostItNotesComponent implements OnInit {
 

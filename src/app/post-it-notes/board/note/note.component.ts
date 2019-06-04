@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
@@ -7,7 +7,8 @@ import { PostItNotesService } from '../../../post-it-notes.service';
 @Component({
   selector: 'app-note',
   templateUrl: './note.component.html',
-  styleUrls: ['./note.component.css']
+  styleUrls: ['./note.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoteComponent implements OnInit {
   @Input('note')
