@@ -1,5 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+
 import { PostItNote } from '../../../post-it-note';
+import { PostItNotesService } from '../../../post-it-notes.service';
 
 @Component({
   selector: 'app-note-simple',
@@ -12,9 +15,29 @@ export class NoteSimpleComponent implements OnInit {
   @Input('note')
   note: PostItNote;
 
-  constructor() { }
+  subscriptions: Array<Subscription> = new Array<Subscription>();
+
+  constructor(
+    private postItNotesService: PostItNotesService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
+    this.subscriptions.push(
+      this.postItNotesService.itemChangeEvent.subscribe(
+        (note: PostItNote) => {
+          if (this.note === note) {
+            this.changeDetectorRef.markForCheck();
+          }
+        }
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   get title(): string {

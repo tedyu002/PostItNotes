@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
@@ -14,6 +15,8 @@ export class NoteComponent implements OnInit {
   @Input('note')
   _note: PostItNote;
 
+  subscriptions: Array<Subscription> = new Array<Subscription>();
+
   noteForm: FormGroup = new FormGroup({
     title: new FormControl('', {updateOn: 'blur'}),
     color: new FormControl('', {updateOn: 'blur'}),
@@ -21,7 +24,8 @@ export class NoteComponent implements OnInit {
   });
 
   constructor(
-    private postItNotesService: PostItNotesService
+    private postItNotesService: PostItNotesService,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -41,6 +45,22 @@ export class NoteComponent implements OnInit {
       this._note.content = content;
       this.postItNotesService.update(this._note);
     });
+
+    this.subscriptions.push(
+      this.postItNotesService.itemChangeEvent.subscribe(
+        (note: PostItNote) => {
+          if (this._note === note) {
+            this.changeDetectorRef.markForCheck();
+          }
+        }
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   del(): void {

@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
 import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { PostItNote } from '../../post-it-note';
 
+import { PostItNote } from '../../post-it-note';
 import { PostItNotesService } from '../../post-it-notes.service';
 
 @Component({
@@ -12,6 +13,8 @@ import { PostItNotesService } from '../../post-it-notes.service';
 export class ListComponent implements OnInit {
   notes: Array<PostItNote>;
 
+  subscriptions: Array<Subscription> = new Array<Subscription>();
+
   constructor(
     private postItNotesService: PostItNotesService,
     private changeDetector: ChangeDetectorRef
@@ -20,11 +23,27 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.notes = this.postItNotesService.list();
 
-    this.postItNotesService.itemChangeEvent.subscribe(
-      () => {
-        this.changeDetector.markForCheck();
-      }
+    this.subscriptions.push(
+      this.postItNotesService.itemInsertEvent.subscribe(
+        () => {
+          this.changeDetector.markForCheck();
+        }
+      )
     );
+
+    this.subscriptions.push(
+      this.postItNotesService.itemDeleteEvent.subscribe(
+        () => {
+          this.changeDetector.markForCheck();
+        }
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    for (let subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 
   noteTrackBy(index, item): string {
