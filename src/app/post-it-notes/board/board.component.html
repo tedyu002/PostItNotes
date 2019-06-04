@@ -4,5 +4,5 @@
   (drop)="drop($event);"
   (dblclick)="newNote($event);"
 >
-  <app-note *ngFor="let note of notes; trackBy: note.id" [note]="note"></app-note>
+  <app-note *ngFor="let note of notes; trackBy: noteTrackBy" [note]="note"></app-note>
 </div>

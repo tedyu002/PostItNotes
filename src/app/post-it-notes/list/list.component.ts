@@ -26,4 +26,8 @@ export class ListComponent implements OnInit {
       }
     );
   }
+
+  noteTrackBy(index, item): string {
+    return item.id;
+  }
 }

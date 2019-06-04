@@ -26,8 +26,14 @@ export class BoardComponent implements OnInit {
     );
   }
 
+  noteTrackBy(index, item): string {
+    return item.id;
+  }
+
   newNote(event: MouseEvent): void {
     let note = new PostItNote();
+
+    note.title = 'Please input title.';
 
     note.left = event.clientX;
     note.top = event.clientY;
