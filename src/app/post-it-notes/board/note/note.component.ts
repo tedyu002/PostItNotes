@@ -1,5 +1,6 @@
-import { Subscription } from 'rxjs';
-import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Subscription, fromEvent } from 'rxjs';
+import { windowToggle, switchAll, tap, filter } from 'rxjs/operators';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
@@ -57,6 +58,52 @@ export class NoteComponent implements OnInit {
     );
   }
 
+  @ViewChild('noteFormDom', {static: true})
+  noteFormDom: ElementRef;
+
+  ngAfterViewInit() {
+    let prevLocation: [number, number] = [0, 0];
+
+    let downWithInit$ = fromEvent(this.noteFormDom.nativeElement, 'mousedown').pipe(
+      filter(
+        (ev: MouseEvent) => {
+          let element: Element = ev.target as Element;
+
+          for (let forbidden of ['INPUT', 'TEXTAREA']) {
+            if (element.tagName == forbidden) {
+              return false;
+            }
+          }
+
+          return true;
+        }
+      ),
+      tap(
+        (ev: MouseEvent) => {
+          prevLocation = [ev.clientX, ev.clientY];
+        }
+      )
+    );
+
+    let movingByDownUp = this.postItNotesService.boardMovingEvent.pipe(
+      windowToggle(downWithInit$, (ev: MouseEvent) => {
+        return fromEvent(ev.target, 'mouseup');
+      }),
+      switchAll()
+    );
+
+    this.subscriptions.push(
+      movingByDownUp.subscribe(
+        (location: [number, number]) => {
+          this._note.left += location[0] - prevLocation[0];
+          this._note.top += location[1] - prevLocation[1];
+          this.postItNotesService.update(this._note);
+          prevLocation = location;
+        }
+      )
+    );
+  }
+
   ngOnDestroy() {
     for (let subscription of this.subscriptions) {
       subscription.unsubscribe();
@@ -70,15 +117,5 @@ export class NoteComponent implements OnInit {
   toTop(): void {
     this.postItNotesService.assignMaxZIndex(this._note);
     this.postItNotesService.update(this._note);
-  }
-
-  dragstart_handler(event: DragEvent): void {
-    event.dataTransfer.setData("text/plain",
-      JSON.stringify({
-        id: this._note.id,
-        clientX: event.clientX,
-        clientY: event.clientY
-      })
-    );
   }
 }

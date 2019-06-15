@@ -1,5 +1,5 @@
-import { Subscription } from 'rxjs';
-import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Subscription, fromEvent } from 'rxjs';
+import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { PostItNote } from '../../post-it-note';
 import { PostItNotesService } from '../../post-it-notes.service';
@@ -40,6 +40,21 @@ export class BoardComponent implements OnInit {
     );
   }
 
+  @ViewChild('board', {static: true})
+  board: ElementRef;
+
+  ngAfterViewInit() {
+    this.subscriptions.push(
+      fromEvent(this.board.nativeElement, 'mousemove').subscribe(
+        (event: MouseEvent) => {
+          this.postItNotesService.boardMovingEvent.emit(
+            [event.clientX, event.clientY]
+          );
+        }
+      )
+    );
+  }
+
   ngOnDestroy() {
     for (let subscription of this.subscriptions) {
       subscription.unsubscribe();
@@ -64,27 +79,5 @@ export class BoardComponent implements OnInit {
 
     this.postItNotesService.assignMaxZIndex(note);
     this.postItNotesService.insert(note);
-  }
-
-  dropping(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  drop(event: DragEvent): void {
-    let data = JSON.parse(event.dataTransfer.getData("text/plain"));
-
-    for (let note of this.notes) {
-      if (data.id == note.id) {
-        note.left = note.left ? note.left: 0;
-        note.top = note.top? note.top: 0;
-
-        note.left += event.clientX - data.clientX;
-        note.top += event.clientY - data.clientY;
-
-        this.postItNotesService.update(note);
-
-        break;
-      }
-    }
   }
 }

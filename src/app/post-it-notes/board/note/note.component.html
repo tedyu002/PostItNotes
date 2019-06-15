@@ -1,9 +1,8 @@
 <form
+  #noteFormDom
   class="note" [formGroup]="noteForm"
-  draggable="true"
   (click)="toTop()"
   (mousedown)="toTop()"
-  (dragstart)="dragstart_handler($event);"
   [style.left]="_note.left + 'px'" [style.top]="_note.top + 'px'" [style.z-index]="_note.zindex">
   <span>Title: <input type="text" formControlName="title"></span>
   <span>Color: <input type="color" formControlName="color"></span>

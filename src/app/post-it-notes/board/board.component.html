@@ -1,7 +1,4 @@
-<div id="board"
-  (dragover)="dropping($event);"
-  (dragenter)="dropping($event);"
-  (drop)="drop($event);"
+<div #board id="board"
   (dblclick)="newNoteIfSelf($event);"
 >
   <app-note *ngFor="let note of notes; trackBy: noteTrackBy" [note]="note"></app-note>
