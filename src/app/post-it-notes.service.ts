@@ -10,8 +10,6 @@ export class PostItNotesService implements OnInit {
   itemInsertEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
   itemChangeEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
   itemDeleteEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
-  boardMovingEvent: EventEmitter<[number, number]> = new EventEmitter<[number, number]>();
-
   notes: Array<PostItNote> = new Array<PostItNote>();
 
   constructor() { }
