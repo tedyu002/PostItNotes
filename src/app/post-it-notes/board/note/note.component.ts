@@ -1,5 +1,5 @@
 import { Subscription, fromEvent } from 'rxjs';
-import { windowToggle, switchAll, tap, filter } from 'rxjs/operators';
+import { windowToggle, switchAll, tap, filter, map, takeUntil } from 'rxjs/operators';
 import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
@@ -66,34 +66,23 @@ export class NoteComponent implements OnInit {
 
     let downWithInit$ = fromEvent(this.noteFormDom.nativeElement, 'mousedown').pipe(
       filter(
-        (ev: MouseEvent) => {
-          let element: Element = ev.target as Element;
-
-          for (let forbidden of ['INPUT', 'TEXTAREA']) {
-            if (element.tagName == forbidden) {
-              return false;
-            }
-          }
-
-          return true;
-        }
+        (ev: MouseEvent) => ['INPUT', 'TEXTAREA'].indexOf((ev.target as Element).tagName) == -1
       ),
       tap(
         (ev: MouseEvent) => {
           prevLocation = [ev.clientX, ev.clientY];
         }
-      )
-    );
-
-    let movingByDownUp = this.postItNotesService.boardMovingEvent.pipe(
-      windowToggle(downWithInit$, (ev: MouseEvent) => {
-        return fromEvent(ev.target, 'mouseup');
+      ),
+      map((ev: MouseEvent) => {
+        return this.postItNotesService.boardMovingEvent.pipe(
+          takeUntil(fromEvent(this.noteFormDom.nativeElement, 'mouseup'))
+        )
       }),
       switchAll()
     );
 
     this.subscriptions.push(
-      movingByDownUp.subscribe(
+      downWithInit$.subscribe(
         (location: [number, number]) => {
           this._note.left += location[0] - prevLocation[0];
           this._note.top += location[1] - prevLocation[1];
