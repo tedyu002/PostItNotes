@@ -21,7 +21,7 @@ export class NoteComponent implements OnInit {
 
   noteForm: FormGroup = new FormGroup({
     title: new FormControl('', {updateOn: 'blur'}),
-    color: new FormControl('', {updateOn: 'blur'}),
+    color: new FormControl('', {updateOn: 'change'}),
     content: new FormControl('', {updateOn: 'blur'})
   });
 
