@@ -5,7 +5,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
 import { PostItNotesService } from '../../../post-it-notes.service';
-import { PostItNotesUIService } from '../../../post-it-notes-ui.service';
+import { PostItNotesUIService, PostItNoteUI } from '../../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-note',
@@ -15,7 +15,7 @@ import { PostItNotesUIService } from '../../../post-it-notes-ui.service';
 })
 export class NoteComponent implements OnInit {
   @Input('note')
-  _note: PostItNote;
+  _note: PostItNoteUI;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 

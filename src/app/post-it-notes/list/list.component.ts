@@ -3,6 +3,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } 
 
 import { PostItNote } from '../../post-it-note';
 import { PostItNotesService } from '../../post-it-notes.service';
+import { PostItNotesUIService,  PostItNoteUI} from '../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-list',
@@ -11,17 +12,18 @@ import { PostItNotesService } from '../../post-it-notes.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListComponent implements OnInit {
-  notes: Array<PostItNote>;
+  notes: Array<PostItNoteUI>;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 
   constructor(
     private postItNotesService: PostItNotesService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetector: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.notes = this.postItNotesService.list();
+    this.notes = this.postItNotesUIService.wrapArray(this.postItNotesService.list());
 
     this.subscriptions.push(
       this.postItNotesService.itemInsertEvent.subscribe(

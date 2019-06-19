@@ -3,6 +3,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } 
 
 import { PostItNote } from '../../../post-it-note';
 import { PostItNotesService } from '../../../post-it-notes.service';
+import { PostItNotesUIService,  PostItNoteUI} from '../../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-note-simple',
@@ -13,12 +14,13 @@ import { PostItNotesService } from '../../../post-it-notes.service';
 export class NoteSimpleComponent implements OnInit {
 
   @Input('note')
-  note: PostItNote;
+  note: PostItNoteUI;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 
   constructor(
     private postItNotesService: PostItNotesService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
 
