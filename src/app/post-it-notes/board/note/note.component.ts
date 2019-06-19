@@ -105,6 +105,7 @@ export class NoteComponent implements OnInit {
 
   toTop(): void {
     this.postItNotesService.assignMaxZIndex(this._note);
+    this.postItNotesUIService.selectedNote = this._note;
     this.postItNotesService.update(this._note);
   }
 }

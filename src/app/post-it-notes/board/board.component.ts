@@ -9,7 +9,7 @@ import { PostItNotesUIService, PostItNoteUI } from '../../post-it-notes-ui.servi
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css'],
-  providers: [PostItNotesUIService],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
@@ -82,6 +82,8 @@ export class BoardComponent implements OnInit {
 
     this.postItNotesService.assignMaxZIndex(note);
     this.postItNotesService.insert(note);
-    this.postItNotesUIService.wrap(note);
+
+    let note_ui = this.postItNotesUIService.wrap(note);
+    this.postItNotesUIService.selectedNote = note_ui;
   }
 }

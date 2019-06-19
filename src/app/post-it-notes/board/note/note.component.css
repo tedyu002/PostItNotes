@@ -10,3 +10,7 @@ img {
   flex-direction: column;
   width: 300px;
 }
+
+.selected {
+  border-width: 5px;
+}

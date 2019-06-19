@@ -7,6 +7,8 @@ import { PostItNote } from './post-it-note';
 export class PostItNotesUIService {
   boardMovingEvent: EventEmitter<[number, number]> = new EventEmitter<[number, number]>();
 
+  _selectedNote: PostItNoteUI;
+
   constructor() {
   }
 
@@ -15,7 +17,7 @@ export class PostItNotesUIService {
 
     for (let note of notes) {
       let note_ui = note as PostItNoteUI;
-      note_ui.is_selected = false;
+      note_ui.selected = false;
     }
 
     return ret_notes as Array<PostItNoteUI>;
@@ -24,12 +26,23 @@ export class PostItNotesUIService {
   wrap(note: PostItNote): PostItNoteUI {
     let note_ui = note as PostItNoteUI;
 
-    note_ui.is_selected = false;
+    note_ui.selected = false;
 
     return note_ui;
+  }
+
+  set selectedNote(note: PostItNoteUI) {
+    if (this._selectedNote) {
+      this._selectedNote.selected = false;
+      this._selectedNote.changeEvent.emit(this._selectedNote);
+    }
+
+    this._selectedNote = note;
+    this._selectedNote.selected = true;
+    this._selectedNote.changeEvent.emit(this._selectedNote);
   }
 }
 
 export class PostItNoteUI extends PostItNote {
-  is_selected: boolean = false;
+  selected: boolean = false;
 }

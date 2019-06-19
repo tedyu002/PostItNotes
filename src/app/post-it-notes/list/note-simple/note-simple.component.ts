@@ -47,4 +47,10 @@ export class NoteSimpleComponent implements OnInit {
   del(): void {
     this.postItNotesService.del(this.note);
   }
+
+  toTop(): void {
+    this.postItNotesService.assignMaxZIndex(this.note);
+    this.postItNotesUIService.selectedNote = this.note;
+    this.postItNotesService.update(this.note);
+  }
 }

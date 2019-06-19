@@ -1,6 +1,7 @@
 <form
   #noteFormDom
   class="note" [formGroup]="noteForm"
+  [class.selected]="_note.selected"
   (click)="toTop()"
   (mousedown)="toTop()"
   [style.left]="_note.left + 'px'" [style.top]="_note.top + 'px'" [style.z-index]="_note.zindex">
