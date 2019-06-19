@@ -3,13 +3,13 @@ import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectionStrateg
 
 import { PostItNote } from '../../post-it-note';
 import { PostItNotesService } from '../../post-it-notes.service';
-import { PostItNotesBoardService } from '../../post-it-notes-board.service';
+import { PostItNotesUIService } from '../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css'],
-  providers: [PostItNotesBoardService],
+  providers: [PostItNotesUIService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
@@ -19,7 +19,7 @@ export class BoardComponent implements OnInit {
 
   constructor(
     private postItNotesService: PostItNotesService,
-    private postItNotesBoardService: PostItNotesBoardService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetector: ChangeDetectorRef
   ) { }
 
@@ -50,7 +50,7 @@ export class BoardComponent implements OnInit {
     this.subscriptions.push(
       fromEvent(this.board.nativeElement, 'mousemove').subscribe(
         (event: MouseEvent) => {
-          this.postItNotesBoardService.boardMovingEvent.emit(
+          this.postItNotesUIService.boardMovingEvent.emit(
             [event.clientX, event.clientY]
           );
         }

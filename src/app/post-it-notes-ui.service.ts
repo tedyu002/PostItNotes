@@ -3,7 +3,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class PostItNotesBoardService {
+export class PostItNotesUIService {
   boardMovingEvent: EventEmitter<[number, number]> = new EventEmitter<[number, number]>();
 
 

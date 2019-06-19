@@ -24,11 +24,9 @@ export class NoteSimpleComponent implements OnInit {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.postItNotesService.itemChangeEvent.subscribe(
+      this.note.changeEvent.subscribe(
         (note: PostItNote) => {
-          if (this.note === note) {
-            this.changeDetectorRef.markForCheck();
-          }
+          this.changeDetectorRef.markForCheck();
         }
       )
     );

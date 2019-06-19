@@ -5,7 +5,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
 import { PostItNotesService } from '../../../post-it-notes.service';
-import { PostItNotesBoardService } from '../../../post-it-notes-board.service';
+import { PostItNotesUIService } from '../../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-note',
@@ -27,7 +27,7 @@ export class NoteComponent implements OnInit {
 
   constructor(
     private postItNotesService: PostItNotesService,
-    private postItNotesBoardService: PostItNotesBoardService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
 
@@ -50,11 +50,9 @@ export class NoteComponent implements OnInit {
     });
 
     this.subscriptions.push(
-      this.postItNotesService.itemChangeEvent.subscribe(
+      this._note.changeEvent.subscribe(
         (note: PostItNote) => {
-          if (this._note === note) {
-            this.changeDetectorRef.markForCheck();
-          }
+          this.changeDetectorRef.markForCheck();
         }
       )
     );
@@ -76,7 +74,7 @@ export class NoteComponent implements OnInit {
         }
       ),
       map((ev: MouseEvent) => {
-        return this.postItNotesBoardService.boardMovingEvent.pipe(
+        return this.postItNotesUIService.boardMovingEvent.pipe(
           takeUntil(fromEvent(this.noteFormDom.nativeElement, 'mouseup'))
         )
       }),
