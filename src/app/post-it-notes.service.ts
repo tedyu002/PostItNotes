@@ -68,6 +68,7 @@ export class PostItNotesService implements OnInit {
         let key = localStorage.key(i);
 
         let item:PostItNote = JSON.parse(localStorage.getItem(key)) as PostItNote;
+        delete item.isNew;
 
         this.notes.push(item);
       }

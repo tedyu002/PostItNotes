@@ -10,3 +10,12 @@ img {
   flex-direction: column;
   width: 300px;
 }
+
+.header {
+  height: 20px;
+  width: 100%;
+}
+
+.content {
+  max-height: 100px;
+}

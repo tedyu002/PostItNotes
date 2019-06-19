@@ -16,13 +16,14 @@ import { PostItNotesBoardService } from '../../../post-it-notes-board.service';
 export class NoteComponent implements OnInit {
   @Input('note')
   _note: PostItNote;
+  isEditing: Boolean;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 
   noteForm: FormGroup = new FormGroup({
-    title: new FormControl('', {updateOn: 'blur'}),
+    title: new FormControl('', {updateOn: 'change'}),
     color: new FormControl('', {updateOn: 'change'}),
-    content: new FormControl('', {updateOn: 'blur'})
+    content: new FormControl('', {updateOn: 'change'})
   });
 
   constructor(
@@ -35,19 +36,7 @@ export class NoteComponent implements OnInit {
     this.noteForm.get('title').setValue(this._note.title);
     this.noteForm.get('color').setValue(this._note.color);
     this.noteForm.get('content').setValue(this._note.content);
-
-    this.noteForm.get('title').valueChanges.subscribe((title) => {
-      this._note.title = title;
-      this.postItNotesService.update(this._note);
-    });
-    this.noteForm.get('color').valueChanges.subscribe((color) => {
-      this._note.color = color;
-      this.postItNotesService.update(this._note);
-    });
-    this.noteForm.get('content').valueChanges.subscribe((content) => {
-      this._note.content = content;
-      this.postItNotesService.update(this._note);
-    });
+    this.isEditing = this._note.isNew;
 
     this.subscriptions.push(
       this.postItNotesService.itemChangeEvent.subscribe(
@@ -108,5 +97,30 @@ export class NoteComponent implements OnInit {
   toTop(): void {
     this.postItNotesService.assignMaxZIndex(this._note);
     this.postItNotesService.update(this._note);
+  }
+
+  onKeydown(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+
+      this._note.title = this.noteForm.get('title').value;
+      this._note.color = this.noteForm.get('color').value;
+      this._note.content = this.noteForm.get('content').value;
+
+      this.postItNotesService.update(this._note);
+      this.isEditing = false;
+    } else if (event.key === 'Escape') {
+      this.noteForm.get('title').setValue(this._note.title);
+      this.noteForm.get('color').setValue(this._note.color);
+      this.noteForm.get('content').setValue(this._note.content);
+    }
+  }
+
+  startEdit() {
+    this.isEditing = true;
+  }
+
+  convertSpan(str) {
+    return str.replace('\n', '<br>');
   }
 }

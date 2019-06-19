@@ -3,8 +3,17 @@
   class="note" [formGroup]="noteForm"
   (click)="toTop()"
   (mousedown)="toTop()"
+  (dblclick)="startEdit();"
   [style.left]="_note.left + 'px'" [style.top]="_note.top + 'px'" [style.z-index]="_note.zindex">
-  <span>Title: <input type="text" formControlName="title"></span>
-  <span>Color: <img (click)="palette.click()" src="assets/palette.png"><input #palette type="color" formControlName="color"></span>
-  <div>Content: <textarea formControlName="content"></textarea></div>
+  <span class='header' [style.background]='_note.color'></span>
+  <span>
+    Title: <input *ngIf='isEditing' (keydown)="onKeydown($event)" [id]="_note.id + '_title'"  type="text" formControlName="title" placeholder="Please input title.">
+            <span *ngIf='!isEditing'>{{ _note.title || '無標題' }}</span>
+  </span>
+  <span>Color: <img (click)="palette.click()" src="assets/palette.png"><input [attr.disabled]="!isEditing ? '' : null" #palette type="color" formControlName="color"></span>
+  <div>
+    Content: 
+      <textarea class='content' *ngIf='isEditing' (keydown)="onKeydown($event)" formControlName="content"  oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+      <span *ngIf='!isEditing'>{{_note.content}}</span>
+  </div>
 </form>
