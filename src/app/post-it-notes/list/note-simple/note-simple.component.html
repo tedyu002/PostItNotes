@@ -1,4 +1,6 @@
 <div class="container" [class.selected]="note.selected" (click)="toTop()">
-  <div>{{title || '無標題'}}</div>
+  <div>
+    <div><span class="color" [style.color]="note.color">&#9646;</span>{{title || '無標題'}}</div>
+  </div>
   <div (click)="del()">X</div>
 </div>
