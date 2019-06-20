@@ -82,9 +82,9 @@ export class BoardComponent implements OnInit {
     note.top = event.clientY;
 
     this.postItNotesService.assignMaxZIndex(note);
-    this.postItNotesService.insert(note);
 
     let note_ui = this.postItNotesUIService.wrap(note);
+    this.postItNotesService.insert(note_ui);
     this.postItNotesUIService.selectedNote = note_ui;
     note_ui.isNew = true;
   }
