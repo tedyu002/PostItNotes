@@ -5,7 +5,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 
 import { PostItNote } from '../../../post-it-note';
 import { PostItNotesService } from '../../../post-it-notes.service';
-import { PostItNotesBoardService } from '../../../post-it-notes-board.service';
+import { PostItNotesUIService, PostItNoteUI } from '../../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-note',
@@ -15,7 +15,7 @@ import { PostItNotesBoardService } from '../../../post-it-notes-board.service';
 })
 export class NoteComponent implements OnInit {
   @Input('note')
-  _note: PostItNote;
+  _note: PostItNoteUI;
   isEditing: Boolean;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -28,7 +28,7 @@ export class NoteComponent implements OnInit {
 
   constructor(
     private postItNotesService: PostItNotesService,
-    private postItNotesBoardService: PostItNotesBoardService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
 
@@ -40,11 +40,9 @@ export class NoteComponent implements OnInit {
     delete this._note.isNew;
 
     this.subscriptions.push(
-      this.postItNotesService.itemChangeEvent.subscribe(
+      this._note.changeEvent.subscribe(
         (note: PostItNote) => {
-          if (this._note === note) {
-            this.changeDetectorRef.markForCheck();
-          }
+          this.changeDetectorRef.markForCheck();
         }
       )
     );
@@ -72,7 +70,7 @@ export class NoteComponent implements OnInit {
         }
       ),
       map((ev: MouseEvent) => {
-        return this.postItNotesBoardService.boardMovingEvent.pipe(
+        return this.postItNotesUIService.boardMovingEvent.pipe(
           takeUntil(fromEvent(this.noteFormDom.nativeElement, 'mouseup'))
         )
       }),
@@ -107,6 +105,7 @@ export class NoteComponent implements OnInit {
 
   toTop(): void {
     this.postItNotesService.assignMaxZIndex(this._note);
+    this.postItNotesUIService.selectedNote = this._note;
     this.postItNotesService.update(this._note);
   }
 

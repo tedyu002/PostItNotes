@@ -32,3 +32,7 @@ img {
   white-space: pre-line;
   overflow-y: auto;
 }
+
+.selected {
+  border-width: 5px;
+}

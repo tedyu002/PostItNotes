@@ -3,28 +3,28 @@ import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectionStrateg
 
 import { PostItNote } from '../../post-it-note';
 import { PostItNotesService } from '../../post-it-notes.service';
-import { PostItNotesBoardService } from '../../post-it-notes-board.service';
+import { PostItNotesUIService, PostItNoteUI } from '../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css'],
-  providers: [PostItNotesBoardService],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
-  notes: Array<PostItNote>;
+  notes: Array<PostItNoteUI>;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 
   constructor(
     private postItNotesService: PostItNotesService,
-    private postItNotesBoardService: PostItNotesBoardService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetector: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
-    this.notes = this.postItNotesService.list();
+    this.notes = this.postItNotesUIService.wrapArray(this.postItNotesService.list());
 
     this.subscriptions.push(
       this.postItNotesService.itemInsertEvent.subscribe(
@@ -50,7 +50,7 @@ export class BoardComponent implements OnInit {
     this.subscriptions.push(
       fromEvent(this.board.nativeElement, 'mousemove').subscribe(
         (event: MouseEvent) => {
-          this.postItNotesBoardService.boardMovingEvent.emit(
+          this.postItNotesUIService.boardMovingEvent.emit(
             [event.clientX, event.clientY]
           );
         }
@@ -76,7 +76,6 @@ export class BoardComponent implements OnInit {
     let note = new PostItNote();
 
     note.title = '';
-    note.isNew = true;
     note.color = '#0080ff';
 
     note.left = event.clientX;
@@ -84,5 +83,9 @@ export class BoardComponent implements OnInit {
 
     this.postItNotesService.assignMaxZIndex(note);
     this.postItNotesService.insert(note);
+
+    let note_ui = this.postItNotesUIService.wrap(note);
+    this.postItNotesUIService.selectedNote = note_ui;
+    note_ui.isNew = true;
   }
 }

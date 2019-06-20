@@ -8,23 +8,33 @@ export class PostItNotesService implements OnInit {
   sequence_number: number = 0;
 
   itemInsertEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
-  itemChangeEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
   itemDeleteEvent: EventEmitter<PostItNote> = new EventEmitter<PostItNote>();
   notes: Array<PostItNote> = new Array<PostItNote>();
 
-  constructor() { }
+  record: Array<string> = new Array<string>();
+
+  constructor() {
+    let note = new PostItNote();
+
+    const objectKeys = Object.keys(note) as Array<keyof PostItNote>;
+    for (let key of objectKeys) {
+      this.record.push(key);
+    }
+  }
 
   ngOnInit() {
   }
 
   ngOnDestroy() {
   }
-  
+
   insert(note: PostItNote): PostItNote {
     note.id = ((new Date()).getTime()) + "" + this.sequence_number;
     this.sequence_number += 1;
 
-    localStorage.setItem(note.id, JSON.stringify(this.checkNoteProperty(note)));
+    localStorage.setItem(note.id, JSON.stringify(note, this.record));
+
+    note.changeEvent = new EventEmitter<PostItNote>();
 
     this.notes.push(note);
 
@@ -34,16 +44,9 @@ export class PostItNotesService implements OnInit {
   }
 
   update(note: PostItNote): void {
-    localStorage.setItem(note.id, JSON.stringify(note));
+    localStorage.setItem(note.id, JSON.stringify(note, this.record));
 
-    for (let i = 0; i < this.notes.length; ++i) {
-      if (this.notes[i].id == note.id) {
-        this.notes[i] = note;
-        break;
-      }
-    }
-
-    this.itemChangeEvent.emit(note);
+    note.changeEvent.emit(note);
   }
 
   del(note: PostItNote): void {
@@ -69,6 +72,8 @@ export class PostItNotesService implements OnInit {
 
         let item:PostItNote = JSON.parse(localStorage.getItem(key)) as PostItNote;
 
+        item.changeEvent = new EventEmitter<PostItNote>();
+
         this.notes.push(item);
       }
     }
@@ -86,11 +91,5 @@ export class PostItNotesService implements OnInit {
     }
 
     assignNote.zindex = max_zindex + 1;
-  }
-
-  checkNoteProperty(note: PostItNote) {
-    let tempNote = Object.assign({}, note);
-    delete tempNote.isNew;
-    return tempNote;
   }
 }

@@ -3,6 +3,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } 
 
 import { PostItNote } from '../../../post-it-note';
 import { PostItNotesService } from '../../../post-it-notes.service';
+import { PostItNotesUIService,  PostItNoteUI} from '../../../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-note-simple',
@@ -13,22 +14,21 @@ import { PostItNotesService } from '../../../post-it-notes.service';
 export class NoteSimpleComponent implements OnInit {
 
   @Input('note')
-  note: PostItNote;
+  note: PostItNoteUI;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 
   constructor(
     private postItNotesService: PostItNotesService,
+    private postItNotesUIService: PostItNotesUIService,
     private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.subscriptions.push(
-      this.postItNotesService.itemChangeEvent.subscribe(
+      this.note.changeEvent.subscribe(
         (note: PostItNote) => {
-          if (this.note === note) {
-            this.changeDetectorRef.markForCheck();
-          }
+          this.changeDetectorRef.markForCheck();
         }
       )
     );
@@ -46,5 +46,11 @@ export class NoteSimpleComponent implements OnInit {
 
   del(): void {
     this.postItNotesService.del(this.note);
+  }
+
+  toTop(): void {
+    this.postItNotesService.assignMaxZIndex(this.note);
+    this.postItNotesUIService.selectedNote = this.note;
+    this.postItNotesService.update(this.note);
   }
 }
