@@ -45,4 +45,5 @@ export class PostItNotesUIService {
 
 export class PostItNoteUI extends PostItNote {
   selected: boolean = false;
+  isNew: boolean = false;
 }

@@ -75,7 +75,8 @@ export class BoardComponent implements OnInit {
 
     let note = new PostItNote();
 
-    note.title = 'Please input title.';
+    note.title = '';
+    note.color = '#0080ff';
 
     note.left = event.clientX;
     note.top = event.clientY;
@@ -85,5 +86,6 @@ export class BoardComponent implements OnInit {
 
     let note_ui = this.postItNotesUIService.wrap(note);
     this.postItNotesUIService.selectedNote = note_ui;
+    note_ui.isNew = true;
   }
 }

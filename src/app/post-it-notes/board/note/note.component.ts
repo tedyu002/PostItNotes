@@ -16,13 +16,14 @@ import { PostItNotesUIService, PostItNoteUI } from '../../../post-it-notes-ui.se
 export class NoteComponent implements OnInit {
   @Input('note')
   _note: PostItNoteUI;
+  isEditing: Boolean;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
 
   noteForm: FormGroup = new FormGroup({
-    title: new FormControl('', {updateOn: 'blur'}),
+    title: new FormControl('', {updateOn: 'change'}),
     color: new FormControl('', {updateOn: 'change'}),
-    content: new FormControl('', {updateOn: 'blur'})
+    content: new FormControl('', {updateOn: 'change'})
   });
 
   constructor(
@@ -35,19 +36,8 @@ export class NoteComponent implements OnInit {
     this.noteForm.get('title').setValue(this._note.title);
     this.noteForm.get('color').setValue(this._note.color);
     this.noteForm.get('content').setValue(this._note.content);
-
-    this.noteForm.get('title').valueChanges.subscribe((title) => {
-      this._note.title = title;
-      this.postItNotesService.update(this._note);
-    });
-    this.noteForm.get('color').valueChanges.subscribe((color) => {
-      this._note.color = color;
-      this.postItNotesService.update(this._note);
-    });
-    this.noteForm.get('content').valueChanges.subscribe((content) => {
-      this._note.content = content;
-      this.postItNotesService.update(this._note);
-    });
+    this.isEditing = this._note.isNew;
+    delete this._note.isNew;
 
     this.subscriptions.push(
       this._note.changeEvent.subscribe(
@@ -60,6 +50,12 @@ export class NoteComponent implements OnInit {
 
   @ViewChild('noteFormDom', {static: true})
   noteFormDom: ElementRef;
+
+  @ViewChild('titleInput', {static: false})
+  titleInput: ElementRef;
+
+  @ViewChild('contentInput', {static: false})
+  contentInput: ElementRef;
 
   ngAfterViewInit() {
     let prevLocation: [number, number] = [0, 0];
@@ -91,6 +87,10 @@ export class NoteComponent implements OnInit {
         }
       )
     );
+
+    if (this._note.isNew) {
+      this.titleInput.nativeElement.focus();
+    }
   }
 
   ngOnDestroy() {
@@ -107,5 +107,27 @@ export class NoteComponent implements OnInit {
     this.postItNotesService.assignMaxZIndex(this._note);
     this.postItNotesUIService.selectedNote = this._note;
     this.postItNotesService.update(this._note);
+  }
+
+  onKeydown(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+
+      this._note.title = this.noteForm.get('title').value;
+      this._note.color = this.noteForm.get('color').value;
+      this._note.content = this.noteForm.get('content').value;
+      this._note.textHeight = this.contentInput.nativeElement.offsetHeight - 6;
+
+      this.postItNotesService.update(this._note);
+      this.isEditing = false;
+    } else if (event.key === 'Escape') {
+      this.noteForm.get('title').setValue(this._note.title);
+      this.noteForm.get('color').setValue(this._note.color);
+      this.noteForm.get('content').setValue(this._note.content);
+    }
+  }
+
+  startEdit() {
+    this.isEditing = true;
   }
 }

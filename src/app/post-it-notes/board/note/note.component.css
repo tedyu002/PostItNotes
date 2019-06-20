@@ -11,6 +11,28 @@ img {
   width: 300px;
 }
 
+.header {
+  height: 20px;
+  width: 100%;
+}
+
+.contant-wrapper {
+  display: flex;
+  width: 200px;
+}
+
+.content {
+  max-height: 100px;
+  width: 200px;
+}
+
+.text {
+  word-break: break-all;
+  width: 200px;
+  white-space: pre-line;
+  overflow-y: auto;
+}
+
 .selected {
   border-width: 5px;
 }
