@@ -28,12 +28,8 @@ export class BoardComponent implements OnInit {
 
     this.subscriptions.push(
       this.postItNotesService.itemInsertEvent.subscribe(
-        (note) => {
+        () => {
           this.changeDetector.markForCheck();
-
-          setTimeout(() => {
-            document.getElementById(note.id + '_title').focus();
-          });
         }
       )
     );

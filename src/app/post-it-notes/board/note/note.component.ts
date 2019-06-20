@@ -37,6 +37,7 @@ export class NoteComponent implements OnInit {
     this.noteForm.get('color').setValue(this._note.color);
     this.noteForm.get('content').setValue(this._note.content);
     this.isEditing = this._note.isNew;
+    delete this._note.isNew;
 
     this.subscriptions.push(
       this.postItNotesService.itemChangeEvent.subscribe(
@@ -51,6 +52,12 @@ export class NoteComponent implements OnInit {
 
   @ViewChild('noteFormDom', {static: true})
   noteFormDom: ElementRef;
+
+  @ViewChild('titleInput', {static: false})
+  titleInput: ElementRef;
+
+  @ViewChild('contentInput', {static: false})
+  contentInput: ElementRef;
 
   ngAfterViewInit() {
     let prevLocation: [number, number] = [0, 0];
@@ -82,6 +89,10 @@ export class NoteComponent implements OnInit {
         }
       )
     );
+
+    if (this._note.isNew) {
+      this.titleInput.nativeElement.focus();
+    }
   }
 
   ngOnDestroy() {
@@ -106,6 +117,7 @@ export class NoteComponent implements OnInit {
       this._note.title = this.noteForm.get('title').value;
       this._note.color = this.noteForm.get('color').value;
       this._note.content = this.noteForm.get('content').value;
+      this._note.textHeight = this.contentInput.nativeElement.offsetHeight - 6;
 
       this.postItNotesService.update(this._note);
       this.isEditing = false;
@@ -118,9 +130,5 @@ export class NoteComponent implements OnInit {
 
   startEdit() {
     this.isEditing = true;
-  }
-
-  convertSpan(str) {
-    return str.replace('\n', '<br>');
   }
 }
