@@ -75,7 +75,9 @@ export class BoardComponent implements OnInit {
 
     let note = new PostItNote();
 
-    note.title = 'Please input title.';
+    note.title = '';
+    note.isNew = true;
+    note.color = '#0080ff';
 
     note.left = event.clientX;
     note.top = event.clientY;

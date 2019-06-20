@@ -6,4 +6,5 @@ export class PostItNote {
   left: number;
   top: number;
   zindex: number;
+  textHeight: number;
 }

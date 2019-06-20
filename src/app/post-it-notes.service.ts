@@ -24,7 +24,7 @@ export class PostItNotesService implements OnInit {
     note.id = ((new Date()).getTime()) + "" + this.sequence_number;
     this.sequence_number += 1;
 
-    localStorage.setItem(note.id, JSON.stringify(note));
+    localStorage.setItem(note.id, JSON.stringify(this.checkNoteProperty(note)));
 
     this.notes.push(note);
 
@@ -86,5 +86,11 @@ export class PostItNotesService implements OnInit {
     }
 
     assignNote.zindex = max_zindex + 1;
+  }
+
+  checkNoteProperty(note: PostItNote) {
+    let tempNote = Object.assign({}, note);
+    delete tempNote.isNew;
+    return tempNote;
   }
 }
