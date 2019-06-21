@@ -103,6 +103,15 @@ export class NoteComponent implements OnInit {
     return this._note;
   }
 
+  get color(): string {
+    if (this.isEditing) {
+      return this.noteForm.get('color').value;
+    }
+    else {
+      return this._note.color;
+    }
+  }
+
   toTop(): void {
     this.postItNotesService.assignMaxZIndex(this._note);
     this.postItNotesUIService.selectedNote = this._note;

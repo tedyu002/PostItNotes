@@ -36,3 +36,7 @@ img {
 .selected {
   border-width: 5px;
 }
+
+.hidden {
+  display: none
+}
