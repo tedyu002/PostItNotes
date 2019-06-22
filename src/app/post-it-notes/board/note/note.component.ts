@@ -112,6 +112,15 @@ export class NoteComponent implements OnInit {
     }
   }
 
+  get content(): string {
+    if (this.isEditing) {
+      return this.noteForm.get('content').value;
+    }
+    else {
+      return this._note.content;
+    }
+  }
+
   toTop(): void {
     this.postItNotesService.assignMaxZIndex(this._note);
     this.postItNotesUIService.selectedNote = this._note;
@@ -125,7 +134,6 @@ export class NoteComponent implements OnInit {
       this._note.title = this.noteForm.get('title').value;
       this._note.color = this.noteForm.get('color').value;
       this._note.content = this.noteForm.get('content').value;
-      this._note.textHeight = this.contentInput.nativeElement.offsetHeight - 6;
 
       this.postItNotesService.update(this._note);
       this.isEditing = false;
@@ -134,9 +142,17 @@ export class NoteComponent implements OnInit {
       this.noteForm.get('color').setValue(this._note.color);
       this.noteForm.get('content').setValue(this._note.content);
     }
+
+    setTimeout(() => {
+        this.changeDetectorRef.markForCheck();
+    }, 1);
   }
 
   startEdit() {
     this.isEditing = true;
+    setTimeout(() => {
+      this.contentInput.nativeElement.focus();
+      this.changeDetectorRef.markForCheck();
+    }, 1);
   }
 }
