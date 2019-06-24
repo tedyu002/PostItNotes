@@ -8,7 +8,6 @@ export class PostItNote {
   left: number = 0;
   top: number = 0;
   zindex: number = 0;
-  textHeight: number = 0;
 
   changeEvent: EventEmitter<PostItNote>;
 }
