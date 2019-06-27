@@ -20,10 +20,9 @@
         class="content"
         *ngIf="isEditing"
         (keydown)="onKeydown($event)"
-        [style.height.px]="_note.textHeight"
         formControlName="content"
         (input)="onContentInput()"></textarea>
-      <div *ngIf="!isEditing" class="content text" [style.height.px]="_note.textHeight" >{{_note.content}}</div>
+      <div *ngIf="!isEditing" class="content text">{{_note.content}}</div>
     </div>
   </div>
 </form>
