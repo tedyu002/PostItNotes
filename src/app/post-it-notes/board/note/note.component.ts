@@ -36,8 +36,10 @@ export class NoteComponent implements OnInit {
     this.noteForm.get('title').setValue(this._note.title);
     this.noteForm.get('color').setValue(this._note.color);
     this.noteForm.get('content').setValue(this._note.content);
-    this.isEditing = this._note.isNew;
-    delete this._note.isNew;
+
+    if (this._note.isNew) {
+      this.startEdit();
+    }
 
     this.subscriptions.push(
       this._note.changeEvent.subscribe(
@@ -125,7 +127,6 @@ export class NoteComponent implements OnInit {
       this._note.title = this.noteForm.get('title').value;
       this._note.color = this.noteForm.get('color').value;
       this._note.content = this.noteForm.get('content').value;
-      this._note.textHeight = this.contentInput.nativeElement.offsetHeight - 6;
 
       this.postItNotesService.update(this._note);
       this.isEditing = false;
@@ -136,7 +137,21 @@ export class NoteComponent implements OnInit {
     }
   }
 
+  onContentInput() {
+    let ele = this.contentInput.nativeElement;
+
+    ele.style.height = "";
+    ele.style.height = ele.scrollHeight + 'px';
+  }
+
   startEdit() {
     this.isEditing = true;
+
+    setTimeout(
+      () => {
+        this.onContentInput();
+        this.contentInput.nativeElement.focus();
+      }
+    , 1);
   }
 }

@@ -5,18 +5,24 @@
   (click)="toTop()"
   (mousedown)="toTop()"
   (dblclick)="startEdit();"
-  [style.left]="_note.left + 'px'" [style.top]="_note.top + 'px'" [style.z-index]="_note.zindex">
-  <span class='header' [style.background]='color'></span>
+  [style.left.px]="_note.left" [style.top.px]="_note.top" [style.z-index]="_note.zindex">
+  <span class="header" [style.background]="color"></span>
   <span>
-    Title: <input #titleInput *ngIf='isEditing' type="text" formControlName="title" placeholder="請輸入標題">
-            <span *ngIf='!isEditing'>{{ _note.title || '無標題' }}</span>
+    Title: <input #titleInput *ngIf="isEditing" type="text" formControlName="title" placeholder="請輸入標題">
+            <span *ngIf="!isEditing">{{ _note.title || '無標題' }}</span>
       <span *ngIf="isEditing"><img (click)="palette.click()" src="assets/palette.png"><input class="hidden" [attr.disabled]="!isEditing ? '' : null" #palette type="color" formControlName="color"></span>
   </span>
   <div class="contant-wrapper">
     <span style="padding-right: 5px">Content:</span>
     <div>
-      <textarea #contentInput class='content' *ngIf='isEditing' (keydown)="onKeydown($event)" [style.height]="_note.textHeight + 'px'" formControlName="content" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
-      <div *ngIf='!isEditing' class='content text' [style.height]="_note.textHeight + 'px'" >{{_note.content}}</div>
+      <textarea
+        #contentInput
+        class="content"
+        *ngIf="isEditing"
+        (keydown)="onKeydown($event)"
+        formControlName="content"
+        (input)="onContentInput()"></textarea>
+      <div *ngIf="!isEditing" class="content text">{{_note.content}}</div>
     </div>
   </div>
 </form>
