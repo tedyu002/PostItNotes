@@ -86,8 +86,11 @@ export class BoardComponent implements OnInit {
 
     let note_ui = this.postItNotesUIService.wrap(note);
 
-    this.notes.push(note_ui);
     this.postItNotesUIService.selectedNote = note_ui;
     note_ui.isEditing = true;
+
+    this.notes.push(note_ui);
+
+    note_ui.emit();
   }
 }
