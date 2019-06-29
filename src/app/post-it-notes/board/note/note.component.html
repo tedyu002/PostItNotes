@@ -8,7 +8,7 @@
   [style.left.px]="note.left" [style.top.px]="note.top" [style.z-index]="note.zindex">
   <span class="header" [style.background]="color"></span>
   <span>
-    Title: <input #titleInput *ngIf="isEditing" type="text" [(ngModel)]="_note.shadowNote.title" (ngModelChange)="modelChange()" placeholder="請輸入標題">
+    Title: <input #titleInput *ngIf="isEditing" type="text" (keydown.enter)="save()" [(ngModel)]="_note.shadowNote.title" (ngModelChange)="modelChange()" placeholder="請輸入標題">
             <span *ngIf="!isEditing">{{ note.title || '無標題' }}</span>
       <span *ngIf="isEditing"><img
           (click)="palette.click()"

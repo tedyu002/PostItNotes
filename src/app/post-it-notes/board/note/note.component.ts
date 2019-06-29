@@ -117,15 +117,19 @@ export class NoteComponent implements OnInit {
     this._note.emit();
   }
 
+  save(): void {
+    this._note.commitShadow();
+
+    this.postItNotesService.update(this._note.note);
+    this._note.isEditing = false;
+    this._note.emit();
+  }
+
   onKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
 
-      this._note.commitShadow();
-
-      this.postItNotesService.update(this._note.note);
-      this._note.isEditing = false;
-      this._note.emit();
+      this.save();
     } else if (event.key === 'Escape') {
       this._note.makeShadow();
       this._note.emit();
