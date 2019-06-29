@@ -13,20 +13,20 @@ export class PostItNotesUIService {
   }
 
   wrapArray(notes: Array<PostItNote>): Array<PostItNoteUI> {
-    let ret_notes: Array<PostItNoteUI> = notes as Array<any>;
+    let ret_notes: Array<PostItNoteUI> = new Array<PostItNoteUI>()
 
     for (let note of notes) {
-      let note_ui = note as PostItNoteUI;
-      note_ui.selected = false;
+      ret_notes.push(this.wrap(note));
     }
 
     return ret_notes as Array<PostItNoteUI>;
   }
 
   wrap(note: PostItNote): PostItNoteUI {
-    let note_ui = note as PostItNoteUI;
+    let note_ui = new PostItNoteUI();
 
-    note_ui.selected = false;
+    note_ui.note = note;
+    note_ui.shadowNote = Object.assign({}, note_ui) as PostItNoteUI;
 
     return note_ui;
   }
@@ -44,6 +44,19 @@ export class PostItNotesUIService {
 }
 
 export class PostItNoteUI extends PostItNote {
+  note: PostItNote;
+  shadowNote: PostItNote;
+
+  changeEvent: EventEmitter<PostItNoteUI> = new EventEmitter<PostItNoteUI>();
+
   selected: boolean = false;
-  isNew: boolean = false;
+  isEditing: boolean = false;
+
+  makeShadow() {
+    Object.assign(this.shadowNote, this.note);
+  }
+
+  commitShadow() {
+    Object.assign(this.note, this.shadowNote);
+  }
 }

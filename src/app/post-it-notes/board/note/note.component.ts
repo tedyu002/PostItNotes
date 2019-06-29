@@ -1,4 +1,4 @@
-import { Subscription, fromEvent } from 'rxjs';
+import { Subscription, fromEvent} from 'rxjs';
 import { windowToggle, switchAll, tap, filter, map, takeUntil } from 'rxjs/operators';
 import { Component, OnInit, Input, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -16,15 +16,8 @@ import { PostItNotesUIService, PostItNoteUI } from '../../../post-it-notes-ui.se
 export class NoteComponent implements OnInit {
   @Input('note')
   _note: PostItNoteUI;
-  isEditing: Boolean;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
-
-  noteForm: FormGroup = new FormGroup({
-    title: new FormControl('', {updateOn: 'change'}),
-    color: new FormControl('', {updateOn: 'change'}),
-    content: new FormControl('', {updateOn: 'change'})
-  });
 
   constructor(
     private postItNotesService: PostItNotesService,
@@ -33,11 +26,7 @@ export class NoteComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.noteForm.get('title').setValue(this._note.title);
-    this.noteForm.get('color').setValue(this._note.color);
-    this.noteForm.get('content').setValue(this._note.content);
-
-    if (this._note.isNew) {
+    if (this._note.isEditing) {
       this.startEdit();
     }
 
@@ -82,15 +71,20 @@ export class NoteComponent implements OnInit {
     this.subscriptions.push(
       downWithInit$.subscribe(
         (location: [number, number]) => {
-          this._note.left += location[0] - prevLocation[0];
-          this._note.top += location[1] - prevLocation[1];
-          this.postItNotesService.update(this._note);
+          this._note.note.left += location[0] - prevLocation[0];
+          this._note.note.top += location[1] - prevLocation[1];
+
+          this._note.shadowNote.left = this._note.note.left;
+          this._note.shadowNote.top = this._note.note.top;
+
+          this.postItNotesService.update(this._note.note);
+          this._note.changeEvent.emit(this._note);
           prevLocation = location;
         }
       )
     );
 
-    if (this._note.isNew) {
+    if (this._note.isEditing) {
       this.titleInput.nativeElement.focus();
     }
   }
@@ -102,38 +96,48 @@ export class NoteComponent implements OnInit {
   }
 
   get note(): PostItNote {
-    return this._note;
+    if (this.isEditing) {
+      return this._note.shadowNote;
+    }
+    else {
+      return this._note.note;
+    }
+  }
+
+  get isEditing(): boolean {
+    return this._note.isEditing;
   }
 
   get color(): string {
     if (this.isEditing) {
-      return this.noteForm.get('color').value;
+      return this._note.shadowNote.color;
     }
     else {
-      return this._note.color;
+      return this._note.note.color;
     }
   }
 
   toTop(): void {
-    this.postItNotesService.assignMaxZIndex(this._note);
+    this.postItNotesService.assignMaxZIndex(this._note.note);
+    this._note.shadowNote.zindex = this._note.note.zindex;
     this.postItNotesUIService.selectedNote = this._note;
-    this.postItNotesService.update(this._note);
+    this.postItNotesService.update(this._note.note);
+    this._note.changeEvent.emit(this._note);
   }
 
   onKeydown(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
 
-      this._note.title = this.noteForm.get('title').value;
-      this._note.color = this.noteForm.get('color').value;
-      this._note.content = this.noteForm.get('content').value;
+      this._note.commitShadow();
 
-      this.postItNotesService.update(this._note);
-      this.isEditing = false;
+      this.postItNotesService.update(this._note.note);
+      this._note.changeEvent.emit(this._note);
+
+      this._note.isEditing = false;
     } else if (event.key === 'Escape') {
-      this.noteForm.get('title').setValue(this._note.title);
-      this.noteForm.get('color').setValue(this._note.color);
-      this.noteForm.get('content').setValue(this._note.content);
+      this._note.makeShadow();
+      this._note.changeEvent.emit(this._note);
     }
   }
 
@@ -145,13 +149,18 @@ export class NoteComponent implements OnInit {
   }
 
   startEdit() {
-    this.isEditing = true;
+    this._note.makeShadow();
+    this._note.isEditing = true;
 
     setTimeout(
       () => {
         this.onContentInput();
         this.contentInput.nativeElement.focus();
-      }
-    , 1);
+      },
+    1);
+  }
+
+  modelChange(): void {
+    this._note.changeEvent.emit(this._note);
   }
 }

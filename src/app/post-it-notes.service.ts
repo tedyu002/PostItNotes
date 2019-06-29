@@ -34,8 +34,6 @@ export class PostItNotesService implements OnInit {
 
     localStorage.setItem(note.id, JSON.stringify(note, this.record));
 
-    note.changeEvent = new EventEmitter<PostItNote>();
-
     this.notes.push(note);
 
     this.itemInsertEvent.emit(note);
@@ -45,8 +43,6 @@ export class PostItNotesService implements OnInit {
 
   update(note: PostItNote): void {
     localStorage.setItem(note.id, JSON.stringify(note, this.record));
-
-    note.changeEvent.emit(note);
   }
 
   del(note: PostItNote): void {
@@ -71,8 +67,6 @@ export class PostItNotesService implements OnInit {
         let key = localStorage.key(i);
 
         let item:PostItNote = JSON.parse(localStorage.getItem(key)) as PostItNote;
-
-        item.changeEvent = new EventEmitter<PostItNote>();
 
         this.notes.push(item);
       }

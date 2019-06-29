@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { PostItNote } from '../post-it-note';
 import { PostItNotesService } from '../post-it-notes.service';
-import { PostItNotesUIService } from '../post-it-notes-ui.service';
+import { PostItNotesUIService, PostItNoteUI } from '../post-it-notes-ui.service';
 
 @Component({
   selector: 'app-post-it-notes',
@@ -15,10 +15,15 @@ import { PostItNotesUIService } from '../post-it-notes-ui.service';
 })
 export class PostItNotesComponent implements OnInit {
 
+  notes: Array<PostItNoteUI>;
+
   constructor(
+    private postItNotesService: PostItNotesService,
+    private postItNotesUIService: PostItNotesUIService
   ) { }
 
   ngOnInit() {
+    this.notes = this.postItNotesUIService.wrapArray(this.postItNotesService.list());
   }
 
   ngOnDestroy() {
