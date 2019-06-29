@@ -29,14 +29,6 @@ export class NoteComponent implements OnInit {
     if (this._note.isEditing) {
       this.startEdit();
     }
-
-    this.subscriptions.push(
-      this._note.changeEvent.subscribe(
-        (note: PostItNote) => {
-          this.changeDetectorRef.markForCheck();
-        }
-      )
-    );
   }
 
   @ViewChild('noteFormDom', {static: true})
@@ -78,7 +70,7 @@ export class NoteComponent implements OnInit {
           this._note.shadowNote.top = this._note.note.top;
 
           this.postItNotesService.update(this._note.note);
-          this._note.changeEvent.emit(this._note);
+          this._note.emit();
           prevLocation = location;
         }
       )
@@ -122,7 +114,7 @@ export class NoteComponent implements OnInit {
     this._note.shadowNote.zindex = this._note.note.zindex;
     this.postItNotesUIService.selectedNote = this._note;
     this.postItNotesService.update(this._note.note);
-    this._note.changeEvent.emit(this._note);
+    this._note.emit();
   }
 
   onKeydown(event) {
@@ -132,12 +124,11 @@ export class NoteComponent implements OnInit {
       this._note.commitShadow();
 
       this.postItNotesService.update(this._note.note);
-      this._note.changeEvent.emit(this._note);
-
       this._note.isEditing = false;
+      this._note.emit();
     } else if (event.key === 'Escape') {
       this._note.makeShadow();
-      this._note.changeEvent.emit(this._note);
+      this._note.emit();
     }
   }
 
@@ -151,6 +142,7 @@ export class NoteComponent implements OnInit {
   startEdit() {
     this._note.makeShadow();
     this._note.isEditing = true;
+    this._note.emit();
 
     setTimeout(
       () => {
@@ -161,6 +153,6 @@ export class NoteComponent implements OnInit {
   }
 
   modelChange(): void {
-    this._note.changeEvent.emit(this._note);
+    this._note.emit();
   }
 }

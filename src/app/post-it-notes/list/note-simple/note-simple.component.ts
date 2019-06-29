@@ -16,8 +16,6 @@ export class NoteSimpleComponent implements OnInit {
   @Input('note')
   _note: PostItNoteUI;
 
-  subscriptions: Array<Subscription> = new Array<Subscription>();
-
   constructor(
     private postItNotesService: PostItNotesService,
     private postItNotesUIService: PostItNotesUIService,
@@ -25,19 +23,9 @@ export class NoteSimpleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this._note.changeEvent.subscribe(
-        (note: PostItNote) => {
-          this.changeDetectorRef.markForCheck();
-        }
-      )
-    );
   }
 
   ngOnDestroy() {
-    for (let subscription of this.subscriptions) {
-      subscription.unsubscribe();
-    }
   }
 
   get note(): PostItNote {
@@ -55,7 +43,8 @@ export class NoteSimpleComponent implements OnInit {
   }
 
   del(): void {
-    this.postItNotesService.del(this._note);
+    this.postItNotesService.del(this._note.note);
+    this.postItNotesUIService.del(this._note);
   }
 
   toTop(): void {
