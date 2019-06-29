@@ -14,9 +14,7 @@ import { PostItNotesUIService,  PostItNoteUI} from '../../../post-it-notes-ui.se
 export class NoteSimpleComponent implements OnInit {
 
   @Input('note')
-  note: PostItNoteUI;
-
-  subscriptions: Array<Subscription> = new Array<Subscription>();
+  _note: PostItNoteUI;
 
   constructor(
     private postItNotesService: PostItNotesService,
@@ -25,32 +23,33 @@ export class NoteSimpleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.note.changeEvent.subscribe(
-        (note: PostItNote) => {
-          this.changeDetectorRef.markForCheck();
-        }
-      )
-    );
   }
 
   ngOnDestroy() {
-    for (let subscription of this.subscriptions) {
-      subscription.unsubscribe();
+  }
+
+  get note(): PostItNote {
+    if (this._note.isEditing) {
+      return this._note.shadowNote;
+    }
+    else {
+      return this._note.note;
     }
   }
+
 
   get title(): string {
     return this.note.title;
   }
 
   del(): void {
-    this.postItNotesService.del(this.note);
+    this.postItNotesService.del(this._note.note);
+    this.postItNotesUIService.del(this._note);
   }
 
   toTop(): void {
-    this.postItNotesService.assignMaxZIndex(this.note);
-    this.postItNotesUIService.selectedNote = this.note;
+    this.postItNotesService.assignMaxZIndex(this._note);
+    this.postItNotesUIService.selectedNote = this._note;
     this.postItNotesService.update(this.note);
   }
 }

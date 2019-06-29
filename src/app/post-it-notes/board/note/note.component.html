@@ -1,16 +1,24 @@
-<form
+<div
   #noteFormDom
-  class="note" [formGroup]="noteForm"
+  class="note"
   [class.selected]="_note.selected"
   (click)="toTop()"
   (mousedown)="toTop()"
   (dblclick)="startEdit();"
-  [style.left.px]="_note.left" [style.top.px]="_note.top" [style.z-index]="_note.zindex">
+  [style.left.px]="note.left" [style.top.px]="note.top" [style.z-index]="note.zindex">
   <span class="header" [style.background]="color"></span>
   <span>
-    Title: <input #titleInput *ngIf="isEditing" type="text" formControlName="title" placeholder="請輸入標題">
-            <span *ngIf="!isEditing">{{ _note.title || '無標題' }}</span>
-      <span *ngIf="isEditing"><img (click)="palette.click()" src="assets/palette.png"><input class="hidden" [attr.disabled]="!isEditing ? '' : null" #palette type="color" formControlName="color"></span>
+    Title: <input #titleInput *ngIf="isEditing" type="text" (keydown.enter)="save()" [(ngModel)]="_note.shadowNote.title" (ngModelChange)="modelChange()" placeholder="請輸入標題">
+            <span *ngIf="!isEditing">{{ note.title || '無標題' }}</span>
+      <span *ngIf="isEditing"><img
+          (click)="palette.click()"
+          src="assets/palette.png"><input
+            #palette
+            class="hidden"
+            type="color"
+            [(ngModel)]="_note.shadowNote.color"
+            (ngModelChange)="modelChange()"
+            ></span>
   </span>
   <div class="contant-wrapper">
     <span style="padding-right: 5px">Content:</span>
@@ -20,9 +28,9 @@
         class="content"
         *ngIf="isEditing"
         (keydown)="onKeydown($event)"
-        formControlName="content"
+        [(ngModel)]="_note.shadowNote.content"
         (input)="onContentInput()"></textarea>
-      <div *ngIf="!isEditing" class="content text">{{_note.content}}</div>
+      <div *ngIf="!isEditing" class="content text">{{note.content}}</div>
     </div>
   </div>
-</form>
+</div>

@@ -13,6 +13,7 @@ import { PostItNotesUIService, PostItNoteUI } from '../../post-it-notes-ui.servi
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardComponent implements OnInit {
+  @Input('notes')
   notes: Array<PostItNoteUI>;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -24,8 +25,6 @@ export class BoardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.notes = this.postItNotesUIService.wrapArray(this.postItNotesService.list());
-
     this.subscriptions.push(
       this.postItNotesService.itemInsertEvent.subscribe(
         () => {
@@ -83,9 +82,15 @@ export class BoardComponent implements OnInit {
 
     this.postItNotesService.assignMaxZIndex(note);
 
+    this.postItNotesService.insert(note);
+
     let note_ui = this.postItNotesUIService.wrap(note);
-    this.postItNotesService.insert(note_ui);
+
     this.postItNotesUIService.selectedNote = note_ui;
-    note_ui.isNew = true;
+    note_ui.isEditing = true;
+
+    this.notes.push(note_ui);
+
+    note_ui.emit();
   }
 }

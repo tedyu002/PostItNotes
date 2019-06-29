@@ -12,6 +12,7 @@ import { PostItNotesUIService,  PostItNoteUI} from '../../post-it-notes-ui.servi
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListComponent implements OnInit {
+  @Input('notes')
   notes: Array<PostItNoteUI>;
 
   subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -23,8 +24,6 @@ export class ListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.notes = this.postItNotesUIService.wrapArray(this.postItNotesService.list());
-
     this.subscriptions.push(
       this.postItNotesService.itemInsertEvent.subscribe(
         () => {
